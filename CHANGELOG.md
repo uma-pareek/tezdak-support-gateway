@@ -2,5 +2,8 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.2 (2026-10-02)
+- Router in front of the loop; delivery complaints go to a human.
+
 ## 0.1 (2026-10-01)
 - First version, status questions and reschedules only.
