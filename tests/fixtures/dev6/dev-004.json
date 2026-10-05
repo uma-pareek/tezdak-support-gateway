@@ -1,0 +1,82 @@
+{
+  "id": "dev-004",
+  "world": {
+    "now": "2026-11-05T11:40:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ4829304",
+      "status": "NDR",
+      "attempts_used": 3,
+      "payment_mode": "PREPAID",
+      "amount_inr": 899,
+      "pincode": "400053",
+      "tier": "metro",
+      "phone": "+91-90000-00004",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 19.1136,
+        "lng": 72.8697
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-05T09:10:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-05T09:10:00+05:30",
+        "attempt_n": 3,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-05T10:20:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer unreachable",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-05T09:10:00+05:30",
+        "attempt_n": 3,
+        "otp_verified": false,
+        "ev": {
+          "loc": {
+            "lat": 19.1137,
+            "lng": 72.8698
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 31
+          }
+        }
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Busy parent in Mumbai, already missed two attempts",
+      "goal": "Make sure the parcel is not sent back",
+      "patience": 3,
+      "language": "en",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "Third delivery attempt failed. Please do not send my parcel back.",
+      "rules": [
+        {
+          "when": "escalat|team|senior|hub",
+          "reply": "Yes please, that sounds right."
+        },
+        {
+          "when": "reschedul|slot|tomorrow|today",
+          "reply": "Can you really book another attempt? I was told three is the limit."
+        },
+        {
+          "when": "refund|credit",
+          "reply": "No refund, I want the parcel."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 5
+    }
+  }
+}

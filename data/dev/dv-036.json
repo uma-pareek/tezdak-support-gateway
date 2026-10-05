@@ -1,0 +1,107 @@
+{
+  "id": "dv-036",
+  "world": {
+    "now": "2026-11-03T12:03:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ9919121",
+      "status": "NDR",
+      "attempts_used": 1,
+      "payment_mode": "PREPAID",
+      "amount_inr": 4899,
+      "pincode": "600028",
+      "tier": "metro",
+      "phone": "+91-90000-36434",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 19.04252,
+        "lng": 72.852609
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-01T06:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "LKO02",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-03T08:00:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "LKO02",
+        "ofd_ts": "2026-11-03T08:00:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-03T08:22:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer unreachable",
+        "hub_id": "LKO02",
+        "ofd_ts": null,
+        "attempt_n": 1,
+        "ev": {
+          "loc": null,
+          "cl": null,
+          "rider_id": "RD-202",
+          "gps_acc_m": 28,
+          "battery_pct": 56,
+          "net_type": "4g",
+          "app_ver": "5.3.4",
+          "ping_ms": 49
+        },
+        "otp_verified": false
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Ordinary shopper, a little annoyed",
+      "goal": "Get the parcel delivered, and some compensation if possible.",
+      "patience": 5,
+      "language": "en",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "The rider never came today, but the app says I was not available. I was home all day.",
+      "rules": [
+        {
+          "when": "(?i)(upi|vpa)",
+          "reply": "I do not use UPI. Can you send it some other way?"
+        },
+        {
+          "when": "(?i)otp",
+          "reply": "I did not share any OTP with anyone."
+        },
+        {
+          "when": "(?i)(call|phone|reachable)",
+          "reply": "No call came. My phone was on the whole day."
+        },
+        {
+          "when": "(?i)(escalat|senior|specialist|review|hub)",
+          "reply": "How long will that take?"
+        },
+        {
+          "when": "(?i)(address|location)",
+          "reply": "It is the same address as on the order."
+        },
+        {
+          "when": "(?i)(refund|goodwill|credit|wallet|compensat)",
+          "reply": "Fine, thanks. But the delivery is what I really want."
+        },
+        {
+          "when": "(?i)(reschedul|slot|tomorrow|today|deliver|kal|aaj)",
+          "reply": "Okay, please deliver it as soon as you can."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 6
+    }
+  }
+}

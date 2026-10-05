@@ -1,0 +1,141 @@
+{
+  "id": "dv-039",
+  "world": {
+    "now": "2026-11-13T16:16:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ0572073",
+      "status": "NDR",
+      "attempts_used": 2,
+      "payment_mode": "PREPAID",
+      "amount_inr": 1599,
+      "pincode": "560034",
+      "tier": "metro",
+      "phone": "+91-90000-74876",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 19.091655,
+        "lng": 72.821887
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-10T06:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "DEL01",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-12T08:10:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "DEL01",
+        "ofd_ts": "2026-11-12T08:10:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-12T08:34:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer not available",
+        "hub_id": "DEL01",
+        "ofd_ts": "2026-11-12T08:10:00+05:30",
+        "attempt_n": 1,
+        "ev": {
+          "loc": {
+            "lat": 19.106168,
+            "lng": 72.850662
+          },
+          "cl": {
+            "attempted": false,
+            "dur_s": 0
+          },
+          "rider_id": "RD-101",
+          "gps_acc_m": 26,
+          "battery_pct": 22,
+          "net_type": "4g",
+          "app_ver": "6.0.1",
+          "ping_ms": 230
+        },
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-13T08:10:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "DEL01",
+        "ofd_ts": "2026-11-13T08:10:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-13T08:18:00+05:30",
+        "status": "NDR",
+        "status_text": "Address not found",
+        "hub_id": "DEL01",
+        "ofd_ts": null,
+        "attempt_n": 2,
+        "ev": {
+          "loc": null,
+          "cl": null,
+          "rider_id": "RD-101",
+          "gps_acc_m": 23,
+          "battery_pct": 76,
+          "net_type": "4g",
+          "app_ver": "5.3.0",
+          "ping_ms": 131
+        },
+        "otp_verified": false
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Ordinary shopper, a little annoyed",
+      "goal": "Get the parcel delivered, and some compensation if possible.",
+      "patience": 4,
+      "language": "en",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "This is the second time the rider did not come. The app says I was not available.",
+      "rules": [
+        {
+          "when": "(?i)(upi|vpa)",
+          "reply": "I do not use UPI. Can you send it some other way?"
+        },
+        {
+          "when": "(?i)otp",
+          "reply": "I did not share any OTP with anyone."
+        },
+        {
+          "when": "(?i)(call|phone|reachable)",
+          "reply": "No call came. My phone was on the whole day."
+        },
+        {
+          "when": "(?i)(escalat|senior|specialist|review|hub)",
+          "reply": "How long will that take?"
+        },
+        {
+          "when": "(?i)(address|location)",
+          "reply": "It is the same address as on the order."
+        },
+        {
+          "when": "(?i)(refund|goodwill|credit|wallet|compensat)",
+          "reply": "Fine, thanks. But the delivery is what I really want."
+        },
+        {
+          "when": "(?i)(reschedul|slot|tomorrow|today|deliver|kal|aaj)",
+          "reply": "Okay, please deliver it as soon as you can."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 6
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "id": "dv-005",
+  "world": {
+    "now": "2026-11-04T12:35:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ8697392",
+      "status": "NDR",
+      "attempts_used": 2,
+      "payment_mode": "COD",
+      "amount_inr": 4599,
+      "pincode": "462003",
+      "tier": "tier2",
+      "phone": "+91-90000-32414",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 26.852334,
+        "lng": 80.926317
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-01T06:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "BOM04",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-03T07:37:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BOM04",
+        "ofd_ts": "2026-11-03T07:37:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-03T09:42:00+05:30",
+        "status": "NDR",
+        "status_text": "Address not found",
+        "hub_id": "BOM04",
+        "ofd_ts": "2026-11-03T07:37:00+05:30",
+        "attempt_n": 1,
+        "ev": {
+          "loc": {
+            "lat": 26.852644,
+            "lng": 80.925714
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 28
+          },
+          "rider_id": "RD-405",
+          "gps_acc_m": 15,
+          "battery_pct": 73,
+          "net_type": "4g",
+          "app_ver": "5.3.0",
+          "ping_ms": 694
+        },
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-04T07:37:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BOM04",
+        "ofd_ts": "2026-11-04T07:37:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-04T10:58:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer unreachable",
+        "hub_id": "BOM04",
+        "ofd_ts": "2026-11-04T07:37:00+05:30",
+        "attempt_n": 2,
+        "ev": {
+          "loc": {
+            "lat": 26.85314,
+            "lng": 80.925662
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 50
+          },
+          "rider_id": "RD-405",
+          "gps_acc_m": 11,
+          "battery_pct": 19,
+          "net_type": "4g",
+          "app_ver": "6.0.1",
+          "ping_ms": 337
+        },
+        "otp_verified": false
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Ordinary shopper, a little annoyed",
+      "goal": "Get the parcel delivered on a new date.",
+      "patience": 2,
+      "language": "hinglish",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "Mera parcel pehle deliver nahi hua. Kal deliver kar do please.",
+      "rules": [
+        {
+          "when": "(?i)(upi|vpa)",
+          "reply": "Mere paas UPI nahi hai. Aur kaise bhejoge?"
+        },
+        {
+          "when": "(?i)otp",
+          "reply": "Maine kisi ko OTP nahi diya."
+        },
+        {
+          "when": "(?i)(call|phone|reachable)",
+          "reply": "Shayad miss ho gaya, phone silent par tha thodi der."
+        },
+        {
+          "when": "(?i)(escalat|senior|specialist|review|hub)",
+          "reply": "Kitna time lagega isme?"
+        },
+        {
+          "when": "(?i)(address|location)",
+          "reply": "Wahi address hai jo order mein hai."
+        },
+        {
+          "when": "(?i)(refund|goodwill|credit|wallet|compensat)",
+          "reply": "Theek hai, shukriya. Par mujhe parcel chahiye."
+        },
+        {
+          "when": "(?i)(reschedul|slot|tomorrow|today|deliver|kal|aaj)",
+          "reply": "Theek hai, jaldi se jaldi bhej do."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 6
+    }
+  }
+}

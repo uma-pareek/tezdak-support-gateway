@@ -1,0 +1,147 @@
+{
+  "id": "dv-019",
+  "world": {
+    "now": "2026-11-11T10:52:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ1226543",
+      "status": "NDR",
+      "attempts_used": 2,
+      "payment_mode": "PREPAID",
+      "amount_inr": 2999,
+      "pincode": "560034",
+      "tier": "metro",
+      "phone": "+91-90000-01036",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 19.093924,
+        "lng": 72.83612
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-08T06:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "BLR03",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-10T08:03:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-10T08:03:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-10T08:09:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer unreachable",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-10T08:03:00+05:30",
+        "attempt_n": 1,
+        "ev": {
+          "loc": {
+            "lat": 19.093669,
+            "lng": 72.836401
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 3
+          },
+          "rider_id": "RD-304",
+          "gps_acc_m": 14,
+          "battery_pct": 99,
+          "net_type": "4g",
+          "app_ver": "5.3.0",
+          "ping_ms": 82
+        },
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-11T08:03:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-11T08:03:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-11T08:11:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer not available",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-11T08:03:00+05:30",
+        "attempt_n": 2,
+        "ev": {
+          "loc": {
+            "lat": 19.093763,
+            "lng": 72.835473
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 6
+          },
+          "rider_id": "RD-304",
+          "gps_acc_m": 40,
+          "battery_pct": 4,
+          "net_type": "2g",
+          "app_ver": "5.3.0",
+          "ping_ms": 87
+        },
+        "otp_verified": false
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Ordinary shopper, a little annoyed",
+      "goal": "Get the parcel delivered, and some compensation if possible.",
+      "patience": 3,
+      "language": "en",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "My parcel could not be delivered. When will it reach me?",
+      "rules": [
+        {
+          "when": "(?i)(upi|vpa)",
+          "reply": "I do not use UPI. Can you send it some other way?"
+        },
+        {
+          "when": "(?i)otp",
+          "reply": "I did not share any OTP with anyone."
+        },
+        {
+          "when": "(?i)(call|phone|reachable)",
+          "reply": "No call came. My phone was on the whole day."
+        },
+        {
+          "when": "(?i)(escalat|senior|specialist|review|hub)",
+          "reply": "How long will that take?"
+        },
+        {
+          "when": "(?i)(address|location)",
+          "reply": "It is the same address as on the order."
+        },
+        {
+          "when": "(?i)(refund|goodwill|credit|wallet|compensat)",
+          "reply": "Fine, thanks. But the delivery is what I really want."
+        },
+        {
+          "when": "(?i)(reschedul|slot|tomorrow|today|deliver|kal|aaj)",
+          "reply": "Okay, please deliver it as soon as you can."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 6
+    }
+  }
+}

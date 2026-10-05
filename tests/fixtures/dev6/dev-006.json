@@ -1,0 +1,86 @@
+{
+  "id": "dev-006",
+  "world": {
+    "now": "2026-11-02T09:40:00+05:30",
+    "latency_profile": "slow",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ4829306",
+      "status": "NDR",
+      "attempts_used": 2,
+      "payment_mode": "PREPAID",
+      "amount_inr": 1799,
+      "pincode": "560001",
+      "tier": "metro",
+      "phone": "+91-90000-00006",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-02T08:00:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-02T08:00:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-02T09:15:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer unreachable",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-02T08:00:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false,
+        "ev": {
+          "loc": {
+            "lat": 12.9718,
+            "lng": 77.5948
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 19
+          }
+        }
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Customer in Bengaluru, wants delivery within the day",
+      "goal": "Get the parcel today",
+      "patience": 3,
+      "language": "en",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "I missed the call from your rider. Can you deliver today?",
+      "rules": [
+        {
+          "when": "today",
+          "reply": "Great, thank you. I will be home."
+        },
+        {
+          "when": "tomorrow",
+          "reply": "Tomorrow is not ideal, but okay."
+        },
+        {
+          "when": "reschedul|slot|booked",
+          "reply": "Thanks, please confirm the slot."
+        },
+        {
+          "when": "refund|credit",
+          "reply": "No refund needed."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 5
+    }
+  }
+}

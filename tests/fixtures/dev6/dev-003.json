@@ -1,0 +1,82 @@
+{
+  "id": "dev-003",
+  "world": {
+    "now": "2026-11-04T16:30:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ4829303",
+      "status": "DELIVERED",
+      "attempts_used": 1,
+      "payment_mode": "PREPAID",
+      "amount_inr": 2199,
+      "pincode": "560034",
+      "tier": "metro",
+      "phone": "+91-90000-00003",
+      "otp_required": true,
+      "address_geo": {
+        "lat": 12.9716,
+        "lng": 77.5946
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-04T09:00:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-04T09:00:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-04T13:05:00+05:30",
+        "status": "DELIVERED",
+        "status_text": "Delivered, OTP verified",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-04T09:00:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": true,
+        "ev": {
+          "loc": {
+            "lat": 12.9717,
+            "lng": 77.5947
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 30
+          }
+        }
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Customer who says nothing arrived",
+      "goal": "Get a refund for a parcel marked delivered",
+      "patience": 3,
+      "language": "en",
+      "can_give_vpa": true
+    },
+    "script": {
+      "opening": "My order shows delivered but I never got it. Please refund me.",
+      "rules": [
+        {
+          "when": "otp",
+          "reply": "I did not share any OTP."
+        },
+        {
+          "when": "refund|credit",
+          "reply": "Then give me a refund anyway."
+        },
+        {
+          "when": "escalat|team|senior",
+          "reply": "Fine, go ahead."
+        }
+      ],
+      "fallback": "I still want my money back",
+      "max_turns": 4
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "id": "dv-009",
+  "world": {
+    "now": "2026-11-02T12:03:00+05:30",
+    "latency_profile": "slow",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ7073308",
+      "status": "NDR",
+      "attempts_used": 2,
+      "payment_mode": "PREPAID",
+      "amount_inr": 4099,
+      "pincode": "560034",
+      "tier": "metro",
+      "phone": "+91-90000-66287",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 19.088479,
+        "lng": 72.869948
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-10-30T06:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "BLR03",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-01T08:03:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-01T08:03:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-01T09:49:00+05:30",
+        "status": "NDR",
+        "status_text": "Address not found",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-01T08:03:00+05:30",
+        "attempt_n": 1,
+        "ev": {
+          "loc": {
+            "lat": 19.087152,
+            "lng": 72.868914
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 39
+          },
+          "rider_id": "RD-303",
+          "gps_acc_m": 18,
+          "battery_pct": 55,
+          "net_type": "4g",
+          "app_ver": "5.3.4",
+          "ping_ms": 136
+        },
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-02T08:03:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-02T08:03:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-02T10:48:00+05:30",
+        "status": "NDR",
+        "status_text": "Address not found",
+        "hub_id": "BLR03",
+        "ofd_ts": "2026-11-02T08:03:00+05:30",
+        "attempt_n": 2,
+        "ev": {
+          "loc": {
+            "lat": 19.088743,
+            "lng": 72.868722
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 41
+          },
+          "rider_id": "RD-303",
+          "gps_acc_m": 27,
+          "battery_pct": 8,
+          "net_type": "4g",
+          "app_ver": "5.3.4",
+          "ping_ms": 784
+        },
+        "otp_verified": false
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Ordinary shopper, a little annoyed",
+      "goal": "Get the parcel delivered, and some compensation if possible.",
+      "patience": 4,
+      "language": "hinglish",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "App mein delivery failed likha hai. Shayad rider ka call miss ho gaya. Dobara bhej do please.",
+      "rules": [
+        {
+          "when": "(?i)(upi|vpa)",
+          "reply": "Mere paas UPI nahi hai. Aur kaise bhejoge?"
+        },
+        {
+          "when": "(?i)otp",
+          "reply": "Maine kisi ko OTP nahi diya."
+        },
+        {
+          "when": "(?i)(call|phone|reachable)",
+          "reply": "Shayad miss ho gaya, phone silent par tha thodi der."
+        },
+        {
+          "when": "(?i)(escalat|senior|specialist|review|hub)",
+          "reply": "Kitna time lagega isme?"
+        },
+        {
+          "when": "(?i)(address|location)",
+          "reply": "Wahi address hai jo order mein hai."
+        },
+        {
+          "when": "(?i)(refund|goodwill|credit|wallet|compensat)",
+          "reply": "Theek hai, shukriya. Par mujhe parcel chahiye."
+        },
+        {
+          "when": "(?i)(reschedul|slot|tomorrow|today|deliver|kal|aaj)",
+          "reply": "Theek hai, jaldi se jaldi bhej do."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 6
+    }
+  }
+}

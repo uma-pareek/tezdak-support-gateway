@@ -1,0 +1,99 @@
+{
+  "id": "dev-001",
+  "world": {
+    "now": "2026-11-02T12:10:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ4829301",
+      "status": "NDR",
+      "attempts_used": 1,
+      "payment_mode": "PREPAID",
+      "amount_inr": 1299,
+      "pincode": "110017",
+      "tier": "metro",
+      "phone": "+91-90000-00001",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 28.6139,
+        "lng": 77.209
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-01T18:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "HUB-01",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-02T09:30:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-02T09:30:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-02T09:36:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer not available",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-02T09:30:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false,
+        "ev": {
+          "loc": {
+            "lat": 28.6409,
+            "lng": 77.229
+          },
+          "cl": {
+            "attempted": false,
+            "dur_s": 0
+          }
+        }
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Working professional in Delhi, was at home all morning",
+      "goal": "Get the parcel delivered, annoyed at the rider",
+      "patience": 3,
+      "language": "hinglish",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "Rider aaya hi nahi, mera parcel kab milega?",
+      "rules": [
+        {
+          "when": "refund|goodwill|credit",
+          "reply": "Mujhe refund nahi chahiye, bas parcel chahiye."
+        },
+        {
+          "when": "today|aaj",
+          "reply": "Theek hai, today please. I am at home."
+        },
+        {
+          "when": "tomorrow|kal",
+          "reply": "Tomorrow works, but please make sure the rider actually comes."
+        },
+        {
+          "when": "reschedul|slot",
+          "reply": "Yes, please reschedule."
+        },
+        {
+          "when": "escalat|team|senior",
+          "reply": "Okay, please do that."
+        }
+      ],
+      "fallback": "ok, thanks",
+      "max_turns": 5
+    }
+  }
+}

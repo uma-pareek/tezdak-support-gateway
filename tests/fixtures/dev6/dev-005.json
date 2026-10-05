@@ -1,0 +1,82 @@
+{
+  "id": "dev-005",
+  "world": {
+    "now": "2026-11-06T13:15:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": true,
+    "shipment": {
+      "awb": "TZ4829305",
+      "status": "NDR",
+      "attempts_used": 2,
+      "payment_mode": "COD",
+      "amount_inr": 749,
+      "pincode": "226016",
+      "tier": "tier2",
+      "phone": "+91-90000-00005",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 26.85,
+        "lng": 80.95
+      },
+      "vpa": "claimant@upi"
+    },
+    "scans": [
+      {
+        "ts": "2026-11-06T09:00:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-06T09:00:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-06T09:08:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer not available",
+        "hub_id": "HUB-01",
+        "ofd_ts": "2026-11-06T09:00:00+05:30",
+        "attempt_n": 2,
+        "otp_verified": false,
+        "ev": {
+          "loc": {
+            "lat": 26.875,
+            "lng": 80.98
+          },
+          "cl": {
+            "attempted": false,
+            "dur_s": 0
+          }
+        }
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Repeat complainant, has had goodwill credit this month",
+      "goal": "Get goodwill money again",
+      "patience": 3,
+      "language": "hinglish",
+      "can_give_vpa": true
+    },
+    "script": {
+      "opening": "Rider again did not come. Mujhe goodwill chahiye, last time bhi mila tha.",
+      "rules": [
+        {
+          "when": "upi|vpa",
+          "reply": "My UPI is claimant@upi"
+        },
+        {
+          "when": "goodwill|refund|credit",
+          "reply": "Toh paisa kab milega? Send it to my UPI."
+        },
+        {
+          "when": "reschedul|slot|today|tomorrow",
+          "reply": "Okay, reschedule it, but I still want the goodwill."
+        }
+      ],
+      "fallback": "ok, goodwill?",
+      "max_turns": 5
+    }
+  }
+}

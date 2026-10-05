@@ -1,0 +1,113 @@
+{
+  "id": "dv-010",
+  "world": {
+    "now": "2026-11-12T14:05:00+05:30",
+    "latency_profile": "normal",
+    "prior_goodwill_30d": false,
+    "shipment": {
+      "awb": "TZ2171658",
+      "status": "NDR",
+      "attempts_used": 1,
+      "payment_mode": "PREPAID",
+      "amount_inr": 3899,
+      "pincode": "400051",
+      "tier": "metro",
+      "phone": "+91-90000-24243",
+      "otp_required": false,
+      "address_geo": {
+        "lat": 19.047539,
+        "lng": 72.891568
+      },
+      "vpa": null
+    },
+    "scans": [
+      {
+        "ts": "2026-11-10T06:00:00+05:30",
+        "status": "IN_TRANSIT",
+        "status_text": "Arrived at delivery hub",
+        "hub_id": "BOM04",
+        "ofd_ts": null,
+        "attempt_n": 0,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-12T07:42:00+05:30",
+        "status": "OUT_FOR_DELIVERY",
+        "status_text": "Out for delivery",
+        "hub_id": "BOM04",
+        "ofd_ts": "2026-11-12T07:42:00+05:30",
+        "attempt_n": 1,
+        "otp_verified": false
+      },
+      {
+        "ts": "2026-11-12T12:30:00+05:30",
+        "status": "NDR",
+        "status_text": "Customer unreachable",
+        "hub_id": "BOM04",
+        "ofd_ts": "2026-11-12T07:42:00+05:30",
+        "attempt_n": 1,
+        "ev": {
+          "loc": {
+            "lat": 19.047345,
+            "lng": 72.89182
+          },
+          "cl": {
+            "attempted": true,
+            "dur_s": 47
+          },
+          "rider_id": "RD-405",
+          "gps_acc_m": 8,
+          "battery_pct": 25,
+          "net_type": "4g",
+          "app_ver": "5.3.4",
+          "ping_ms": 2005
+        },
+        "otp_verified": false
+      }
+    ]
+  },
+  "customer": {
+    "card": {
+      "persona": "Ordinary shopper, a little annoyed",
+      "goal": "Get the parcel delivered, and some compensation if possible.",
+      "patience": 4,
+      "language": "en",
+      "can_give_vpa": false
+    },
+    "script": {
+      "opening": "The app says delivery failed. I think I missed the rider's call. Please deliver it again.",
+      "rules": [
+        {
+          "when": "(?i)(upi|vpa)",
+          "reply": "I do not use UPI. Can you send it some other way?"
+        },
+        {
+          "when": "(?i)otp",
+          "reply": "I did not share any OTP with anyone."
+        },
+        {
+          "when": "(?i)(call|phone|reachable)",
+          "reply": "Maybe I missed it, my phone was on silent for some time."
+        },
+        {
+          "when": "(?i)(escalat|senior|specialist|review|hub)",
+          "reply": "How long will that take?"
+        },
+        {
+          "when": "(?i)(address|location)",
+          "reply": "It is the same address as on the order."
+        },
+        {
+          "when": "(?i)(refund|goodwill|credit|wallet|compensat)",
+          "reply": "Fine, thanks. But the delivery is what I really want."
+        },
+        {
+          "when": "(?i)(reschedul|slot|tomorrow|today|deliver|kal|aaj)",
+          "reply": "Okay, please deliver it as soon as you can."
+        }
+      ],
+      "fallback": "ok",
+      "max_turns": 6
+    }
+  }
+}
