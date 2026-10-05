@@ -1,6 +1,7 @@
 """Support agent: routes a customer message, runs the tool loop, returns the reply.
 
 Changelog
+  0.3  Structured ETA commitments returned next to the reply text.
   0.2  Router in front of the loop; delivery complaints go to a human.
   0.1  First version, status questions and reschedules only.
 
