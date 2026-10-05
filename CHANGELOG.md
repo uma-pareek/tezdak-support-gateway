@@ -2,6 +2,9 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.3 (2026-10-05)
+- Structured ETA commitments returned next to the reply text.
+
 ## 0.2 (2026-10-02)
 - Router in front of the loop; delivery complaints go to a human.
 
