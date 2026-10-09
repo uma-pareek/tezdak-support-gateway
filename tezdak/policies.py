@@ -8,7 +8,7 @@ LEGACY_POLICY = {
 }
 
 POLICY_PROMPT = (
-    "Refunds are available within 5 days of delivery. "
+    "Refunds are available within 10 days of delivery. "
     "Refunds or goodwill above Rs 3000 need a human to approve them. "
     "A parcel gets at most 3 delivery attempts."
 )
