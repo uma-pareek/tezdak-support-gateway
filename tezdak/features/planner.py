@@ -40,3 +40,31 @@ class FeaturePlanner:
                 continue
             if self.config.flags.get("use_old_hint_format"):
                 lines.append("[%s] %s" % (f.name, h))
+            else:
+                lines.append("- %s: %s" % (f.name, h))
+        return "\n".join(lines)
+
+    def suggested_args(self, ctx):
+        merged = {}
+        for f in self.active(ctx):
+            for k, v in extract.prefill(f.name, ctx.user_text, ctx.now).items():
+                merged.setdefault(f.name, {})[k] = v
+        return merged
+
+    def dispatch(self, name, args, ctx):
+        offered = {s["name"] for f in self.active(ctx) for s in f.tool_specs()}
+        if name not in offered:
+            return {"error": "tool_not_available", "name": name}
+        result = self.registry.dispatch(name, args, ctx)
+        if self.usage is not None:
+            owner = next((f.name for f in self.registry.features if name in {s["name"] for s in f.tool_specs()}), "?")
+            self.usage.record(name, owner, (args or {}).get("awb") or ctx.awb, result)
+        return result
+
+
+class FeatureSet(FeaturePlanner):  # pragma: no cover - old name
+    """Deprecated: use FeaturePlanner."""
+
+    def __init__(self, *a, **kw):
+        warnings.warn("FeatureSet is deprecated, use FeaturePlanner", DeprecationWarning, stacklevel=2)
+        super().__init__(*a, **kw)
