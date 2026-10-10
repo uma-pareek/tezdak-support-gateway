@@ -18,4 +18,4 @@ Welcome. This takes about half a day.
 
 ## Habits
 - Small commits. A test with every change.
-- Put secrets in enviroment variables, never in the repo.
+- Put secrets in environment variables, never in the repo.
