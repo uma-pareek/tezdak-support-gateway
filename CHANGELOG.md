@@ -2,6 +2,11 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.5 (2026-10-12)
+- Feature skills with a planner: enabled and disabled lists (0.1), spec cap of 12 so the prompt does not grow with
+  every skill (0.2), usage log.
+- Address update, cancel order, COD refund, rider feedback, hand-off summary, delay notifier.
+
 ## 0.4 (2026-10-08)
 - Hinglish replies when the customer writes Hinglish.
 
