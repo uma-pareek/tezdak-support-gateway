@@ -2,6 +2,10 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.6 (2026-10-16)
+- NLU package: rules v1 carved out of the old router (0.1), entities and language detection (0.2),
+  intents v2, shadow comparison and the engine flag (0.3).
+
 ## 0.5 (2026-10-12)
 - Feature skills with a planner: enabled and disabled lists (0.1), spec cap of 12 so the prompt does not grow with
   every skill (0.2), usage log.
