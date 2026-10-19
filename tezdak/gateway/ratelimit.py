@@ -1,4 +1,4 @@
-"""Token buket per phone."""
+"""Token bucket per phone."""
 
 import time
 
