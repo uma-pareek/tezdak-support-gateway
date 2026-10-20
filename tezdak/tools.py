@@ -4,6 +4,7 @@ from .carrier_client import CARRIER_TIMEOUT_S, CarrierTimeout
 from .policies import Policies
 
 TOOL_TIMEOUT_S = CARRIER_TIMEOUT_S
+TOOL_RETRIES = 2
 
 
 def _tool(name, description, properties, required):
@@ -43,18 +44,19 @@ _REQUIRED = {t["name"]: t["parameters"]["required"] for t in TOOL_SPECS}
 class ToolBox:
     """Executes tool calls. `on_event(kind, data)` receives tool_call / tool_result / tool_timeout."""
 
-    def __init__(self, carrier, policies=None, on_event=None, timeout_s=TOOL_TIMEOUT_S):
+    def __init__(self, carrier, policies=None, on_event=None, timeout_s=TOOL_TIMEOUT_S, retries=TOOL_RETRIES):
         self.carrier = carrier
         self.policies = policies or Policies()
         self.on_event = on_event
         self.timeout_s = timeout_s
+        self.retries = retries
         self.specs = TOOL_SPECS
 
     def _emit(self, kind, data):
         if self.on_event:
             self.on_event(kind, data)
 
-    def _invoke(self, name, args, fn):
+    def _once(self, name, args, fn):
         self._emit("tool_call", {"name": name, "args": args, "attempt": 0})
         try:
             result = fn(timeout_s=self.timeout_s)
@@ -63,6 +65,20 @@ class ToolBox:
             return {"error": "carrier_timeout", "detail": str(exc) or "no response from carrier"}
         self._emit("tool_result", {"name": name, "result": result})
         return result
+
+    def _invoke(self, name, args, fn):
+        last = None
+        for attempt in range(self.retries + 1):
+            self._emit("tool_call", {"name": name, "args": args, "attempt": attempt})
+            try:
+                result = fn(timeout_s=self.timeout_s)
+            except CarrierTimeout as exc:
+                last = exc
+                self._emit("tool_timeout", {"name": name, "args": args, "attempt": attempt})
+                continue
+            self._emit("tool_result", {"name": name, "result": result})
+            return result
+        return {"error": "carrier_timeout", "detail": str(last) or "no response from carrier"}
 
     def call(self, name, args):
         """Run one tool call and always return a JSON-able dict."""
@@ -78,21 +94,21 @@ class ToolBox:
             if name == "get_scans":
                 return self._invoke(name, args, lambda timeout_s: c.get_scans(args["awb"], timeout_s=timeout_s))
             if name == "reschedule":
-                return self._invoke(name, args,
+                return self._once(name, args,
                                     lambda timeout_s: c.reschedule(args["awb"], args["slot"], timeout_s=timeout_s))
             if name == "open_rider_dispute":
-                return self._invoke(name, args,
+                return self._once(name, args,
                                     lambda timeout_s: c.open_rider_dispute(args["awb"], args["reason"], timeout_s=timeout_s))
             if name == "create_refund":
                 amount = int(args["amount_inr"])
                 if self.policies.requires_approval(amount):
                     return {"error": "needs_human_approval", "limit_inr": self.policies.approval_limit_inr()}
-                return self._invoke(name, args, lambda timeout_s: c.create_refund(
+                return self._once(name, args, lambda timeout_s: c.create_refund(
                     args["awb"], amount, args["kind"], vpa=args.get("vpa"), timeout_s=timeout_s))
             if name == "escalate":
-                return self._invoke(name, args,
+                return self._once(name, args,
                                     lambda timeout_s: c.escalate(args["awb"], args["reason"], args["kind"], timeout_s=timeout_s))
-            return self._invoke(name, args,
+            return self._once(name, args,
                                 lambda timeout_s: c.close(args["awb"], args["resolution"]))
         except (KeyError, ValueError, TypeError) as exc:
             return {"error": "tool_failed", "detail": "%s: %s" % (type(exc).__name__, exc)}
