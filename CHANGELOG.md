@@ -2,6 +2,11 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.7 (2026-10-21)
+- Gateway: session window and de-duplication of webhook repeats (v1), rate limit (v2), reply splitting and
+  voice-note flag (v3).
+- Business-hours aware ticket SLA checks (backend `sla.py` v2).
+
 ## 0.6 (2026-10-16)
 - NLU package: rules v1 carved out of the old router (0.1), entities and language detection (0.2),
   intents v2, shadow comparison and the engine flag (0.3).
