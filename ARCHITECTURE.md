@@ -1,6 +1,6 @@
 # Architecture
 
-Last touched: 2026-10-07 (Meera). This is a map of the repo as it stands, not a design wish list.
+Last touched: 2026-10-21 (Meera). This is a map of the repo as it stands, not a design wish list.
 
 ## One-paragraph version
 
@@ -13,11 +13,16 @@ Everything the agent does is recorded as events, and the eval harness turns thos
 
 | Package | What it does | State |
 |---|---|---|
+| `tezdak/gateway/` | WhatsApp and app-chat intake, session window, message de-noising, rate limit, reply splitting, voice-note handling. | In use on the message path. Status callbacks, webhook verification and `send_proactive` are built but not on the message path. |
 | `tezdak/agent.py` | `SupportAgent.handle()`: classify, prompt, tool loop, ETA line to commitments. | In use. See [CHANGELOG](CHANGELOG.md) 0.1 to 0.4. |
 | `tezdak/router.py` | Keyword intent router (English and Hinglish). Five intents. | In use. |
 | `tezdak/tools.py` | Seven function tools the model can call, with a per-call timeout of 8 s and a small attempt wrapper. | In use. |
 | `tezdak/carrier_client.py` | Thin client over the carrier API. The simulator stands in for the carrier in this repo. | In use. |
 | `tezdak/policies.py` | Policy numbers and the prompt text the agent reads today. | In use. |
+| `tezdak/nlu/` | Rule engine v1, intents v2, shadow comparison, entity and language helpers. | Behind `TEZDAK_NLU_ENGINE` (unset by default, so the keyword router runs). |
+| `tezdak/features/` | Optional skills (address update, cancel, COD refund, rider feedback, hand-off summary, and more). | Planner is built when a backend is passed. Three skills are switched off by default (`FEATURES_OFF_BY_DEFAULT` in `agent.py`). Some skills only appear when the newer NLU emits their intent. |
+| `tezdak/prompts/` | Prompt versions v1 to v6, hint files, Hinglish style files. | Behind `TEZDAK_PROMPT_VERSION` (unset by default, so the prompt in `agent.py` is used). |
+| `tezdak/backend/` | SQLite-backed stores for orders, tickets, customers, settings, events, plus a seed and a facade. | In use through `Backend`. |
 | `eval/` | Scenario runner, scripted customers, traces, a report of what each chat did. | See [eval-howto](docs/eval-howto.md). |
 
 ## Request flow
