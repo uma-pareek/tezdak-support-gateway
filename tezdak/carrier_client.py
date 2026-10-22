@@ -40,8 +40,8 @@ class CarrierClient:
     def get_scans(self, awb, timeout_s=CARRIER_TIMEOUT_S):
         return self._sim.get_scans(awb, timeout_s=timeout_s)
 
-    def reschedule(self, awb, slot, timeout_s=CARRIER_TIMEOUT_S):
-        return self._sim.reschedule(awb, slot, timeout_s=timeout_s)
+    def reschedule(self, awb, slot, client_ref=None, timeout_s=CARRIER_TIMEOUT_S):
+        return self._sim.reschedule(awb, slot, client_ref=client_ref, timeout_s=timeout_s)
 
     def open_rider_dispute(self, awb, reason, timeout_s=CARRIER_TIMEOUT_S):
         return self._sim.open_rider_dispute(awb, reason, timeout_s=timeout_s)
