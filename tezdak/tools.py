@@ -41,6 +41,13 @@ TOOL_SPECS = [
 _REQUIRED = {t["name"]: t["parameters"]["required"] for t in TOOL_SPECS}
 
 
+def _flatten_scans(raw):
+    return [
+        {"ts": s.get("ts"), "status_text": s.get("status_text"), "attempt_n": s.get("attempt_n")}
+        for s in raw
+    ]
+
+
 class ToolBox:
     """Executes tool calls. `on_event(kind, data)` receives tool_call / tool_result / tool_timeout."""
 
@@ -92,7 +99,8 @@ class ToolBox:
             if name == "get_shipment":
                 return self._invoke(name, args, lambda timeout_s: c.get_shipment(args["awb"], timeout_s=timeout_s))
             if name == "get_scans":
-                return self._invoke(name, args, lambda timeout_s: c.get_scans(args["awb"], timeout_s=timeout_s))
+                res = self._invoke(name, args, lambda timeout_s: c.get_scans(args["awb"], timeout_s=timeout_s))
+                return res if isinstance(res, dict) else _flatten_scans(res)
             if name == "reschedule":
                 return self._once(name, args,
                                     lambda timeout_s: c.reschedule(args["awb"], args["slot"], timeout_s=timeout_s))
