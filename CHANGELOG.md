@@ -2,6 +2,10 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.8 (2026-10-26)
+- Policy generations v1, v2, v3 in `tezdak/policy/`, loaded with `TEZDAK_POLICY_GEN` (not wired into the agent yet).
+- Tool layer v2 in `tezdak/tools_ext/`: per-tool config, TTL cache for reads, argument validation (not wired yet).
+
 ## 0.7 (2026-10-21)
 - Gateway: session window and de-duplication of webhook repeats (v1), rate limit (v2), reply splitting and
   voice-note flag (v3).
