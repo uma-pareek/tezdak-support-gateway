@@ -63,16 +63,6 @@ class ToolBox:
         if self.on_event:
             self.on_event(kind, data)
 
-    def _once(self, name, args, fn):
-        self._emit("tool_call", {"name": name, "args": args, "attempt": 0})
-        try:
-            result = fn(timeout_s=self.timeout_s)
-        except CarrierTimeout as exc:
-            self._emit("tool_timeout", {"name": name, "args": args, "attempt": 0})
-            return {"error": "carrier_timeout", "detail": str(exc) or "no response from carrier"}
-        self._emit("tool_result", {"name": name, "result": result})
-        return result
-
     def _invoke(self, name, args, fn):
         last = None
         for attempt in range(self.retries + 1):
@@ -102,21 +92,21 @@ class ToolBox:
                 res = self._invoke(name, args, lambda timeout_s: c.get_scans(args["awb"], timeout_s=timeout_s))
                 return res if isinstance(res, dict) else _flatten_scans(res)
             if name == "reschedule":
-                return self._once(name, args,
+                return self._invoke(name, args,
                                     lambda timeout_s: c.reschedule(args["awb"], args["slot"], timeout_s=timeout_s))
             if name == "open_rider_dispute":
-                return self._once(name, args,
+                return self._invoke(name, args,
                                     lambda timeout_s: c.open_rider_dispute(args["awb"], args["reason"], timeout_s=timeout_s))
             if name == "create_refund":
                 amount = int(args["amount_inr"])
                 if self.policies.requires_approval(amount):
                     return {"error": "needs_human_approval", "limit_inr": self.policies.approval_limit_inr()}
-                return self._once(name, args, lambda timeout_s: c.create_refund(
+                return self._invoke(name, args, lambda timeout_s: c.create_refund(
                     args["awb"], amount, args["kind"], vpa=args.get("vpa"), timeout_s=timeout_s))
             if name == "escalate":
-                return self._once(name, args,
+                return self._invoke(name, args,
                                     lambda timeout_s: c.escalate(args["awb"], args["reason"], args["kind"], timeout_s=timeout_s))
-            return self._once(name, args,
+            return self._invoke(name, args,
                                 lambda timeout_s: c.close(args["awb"], args["resolution"]))
         except (KeyError, ValueError, TypeError) as exc:
             return {"error": "tool_failed", "detail": "%s: %s" % (type(exc).__name__, exc)}
