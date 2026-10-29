@@ -42,3 +42,47 @@ def list_versions() -> list:
     return sorted(SYSTEM_PROMPTS)
 
 
+def get_prompt_version(version=None) -> str:
+    chosen = (version or os.environ.get(ENV_VAR) or DEFAULT_VERSION).strip().lower()
+    if chosen not in SYSTEM_PROMPTS:
+        raise ValueError(f"unknown prompt version {chosen!r}, expected one of {list_versions()}")
+    return chosen
+
+
+def get_system_prompt(version=None) -> str:
+    return SYSTEM_PROMPTS[get_prompt_version(version)]
+
+
+def get_hints(version=None) -> dict:
+    return dict(HINTS[get_prompt_version(version)])
+
+
+def get_style(version=None, language="hinglish"):
+    """Style guide text, or '' for English or for versions that had no guide."""
+    if language != "hinglish":
+        return ""
+    return STYLES[get_prompt_version(version)] or ""
+
+
+def get_refusal(key, version=None, language="english") -> str:
+    v = get_prompt_version(version)
+    if language == "hinglish" and v in ("v4", "v5", "v6") and key in REFUSAL_V2_HINGLISH:
+        return REFUSAL_V2_HINGLISH[key]
+    return REFUSALS[v][key]
+
+
+def get_escalation(reason="default", version=None, language="english") -> str:
+    v = get_prompt_version(version)
+    table = ESCALATION_V2_HINGLISH if language == "hinglish" and v in ("v4", "v5", "v6") else ESCALATIONS[v]
+    return table.get(reason, table["default"])
+
+
+def render_system_prompt(awb, today, intent, language, limit, escalated, hint="", policy="", version=None) -> str:
+    """Fill the placeholders. Versions without a {policy} slot simply ignore the argument."""
+    template = get_system_prompt(version)
+    style = get_style(version, language)
+    text = template.format(policy=policy, awb=awb, today=today, intent=intent,
+                           language=language, limit=limit, escalated=escalated, hint=hint)
+    if style:
+        text = text + "\n" + style
+    return text
