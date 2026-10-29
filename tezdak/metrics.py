@@ -8,6 +8,7 @@ class Metrics:
     conversations: int = 0
     closed: int = 0
     escalated: int = 0
+    closed_without_escalation: int = 0
     by_intent: dict = field(default_factory=dict)
 
     def record(self, turn) -> None:
@@ -18,12 +19,14 @@ class Metrics:
             self.escalated += 1
         if turn.closed:
             self.closed += 1
+            if not turn.escalated:
+                self.closed_without_escalation += 1
 
     @property
     def resolved_rate(self) -> float:
         if not self.conversations:
             return 0.0
-        return self.closed / self.conversations
+        return self.closed_without_escalation / self.conversations
 
     @property
     def escalation_rate(self) -> float:
