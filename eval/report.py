@@ -93,3 +93,99 @@ def _count_types(ledger: list) -> dict:
         out[e.get("type")] = out.get(e.get("type"), 0) + 1
     return dict(sorted(out.items()))
 
+
+def scenario_facts(scenario_id, events, ledger, outcome, usage, error=None) -> dict:
+    """What happened in one chat. Counts and records only."""
+    refunds = [{"amount_inr": _amount(e), "kind": (e.get("args") or {}).get("kind"),
+                "mode": (e.get("result") or {}).get("mode")}
+               for e in ledger if e.get("type") == "refund_issued" and _ok(e)]
+    calls = tool_calls_from_trace(events)
+    return {
+        "id": scenario_id,
+        "customer_turns": sum(1 for ev in events if ev.get("kind") == "customer_msg"),
+        "agent_turns": sum(1 for ev in events if ev.get("kind") == "agent_msg"),
+        "tool_calls": calls,
+        "ledger": ledger_facts(ledger),
+        "ledger_by_type": _count_types(ledger),
+        "attempts_used": (outcome or {}).get("attempts_used"),
+        "bookings": sum(1 for e in ledger if e.get("type") == "reschedule_applied"
+                       and (e.get("result") or {}).get("status") == "ok"),
+        "refunds": refunds,
+        "refunds_paid_inr": sum(r["amount_inr"] for r in refunds),
+        "escalated": any(e.get("type") == "escalated" and _ok(e) for e in ledger),
+        "closed": any(e.get("type") == "closed" and _ok(e) for e in ledger),
+        "llm": {**usage, "spend_usd": spend_usd(usage)},
+        "error": error,
+    }
+
+
+def build_report(name, facts, usage, tezdak_dir, out_dir) -> dict:
+    hashes = hash_tree(tezdak_dir)
+    prev_name, prev = _previous_report(Path(out_dir))
+    return {
+        "name": name,
+        "scenarios": facts,
+        "llm": {**usage, "spend_usd": spend_usd(usage)},
+        "errors": {f["id"]: f["error"] for f in facts if f["error"]},
+        "tezdak_hashes": hashes,
+        "previous_run": prev_name,
+        "diff_vs_previous": None if prev is None else diff_hashes(prev.get("tezdak_hashes", {}), hashes),
+    }
+
+
+# ------------------------------------------------------------------ text
+
+def _types_text(by_type: dict) -> str:
+    return ", ".join(f"{k} x{v}" for k, v in by_type.items()) or "none"
+
+
+def _yn(flag) -> str:
+    return "yes" if flag else "no"
+
+
+def scenario_line(f: dict) -> str:
+    return (f"{f['id']}: {f['customer_turns']} customer turns, {len(f['tool_calls'])} tool calls, "
+            f"ledger: {_types_text(f['ledger_by_type'])}; attempts used {f['attempts_used']}, "
+            f"bookings {f['bookings']}, refunds {len(f['refunds'])} (Rs {f['refunds_paid_inr']}), "
+            f"escalated {_yn(f['escalated'])}, closed {_yn(f['closed'])}; LLM calls {f['llm'].get('calls', 0)}, "
+            f"spend ${f['llm']['spend_usd']:.4f}" + (f"; error: {f['error']}" if f["error"] else ""))
+
+
+def llm_line(rep: dict) -> str:
+    llm = rep["llm"]
+    return (f"LLM calls {llm.get('calls', 0)}, input tokens {llm.get('input_tokens', 0)}, "
+            f"cached {llm.get('cached_tokens', 0)}, output {llm.get('output_tokens', 0)}, spend ${llm['spend_usd']:.4f}")
+
+
+def render_markdown(rep: dict) -> str:
+    llm = rep["llm"]
+    lines = [
+        f"# Run report: {rep['name']}", "",
+        f"- LLM calls: {llm.get('calls', 0)}, input tokens: {llm.get('input_tokens', 0)}, "
+        f"cached: {llm.get('cached_tokens', 0)}, output: {llm.get('output_tokens', 0)}, spend: ${llm['spend_usd']:.4f}",
+        "", "## Chats", "",
+        "| id | customer turns | tool calls | ledger | attempts used | bookings | refunds (Rs) | escalated | closed | LLM calls |",
+        "|---|---|---|---|---|---|---|---|---|---|",
+    ]
+    for f in rep["scenarios"]:
+        lines.append(f"| {f['id']} | {f['customer_turns']} | {len(f['tool_calls'])} | {_types_text(f['ledger_by_type'])} | "
+                     f"{f['attempts_used']} | {f['bookings']} | {f['refunds_paid_inr']} | {_yn(f['escalated'])} | "
+                     f"{_yn(f['closed'])} | {f['llm'].get('calls', 0)} |")
+    lines += ["", "## Change since previous run", ""]
+    if rep["diff_vs_previous"] is None:
+        lines.append("No previous run found.")
+    elif not rep["diff_vs_previous"]:
+        lines.append(f"No file in tezdak/ changed since `{rep['previous_run']}`.")
+    else:
+        lines.append(f"Files in tezdak/ changed since `{rep['previous_run']}`:")
+        lines += [f"- {f}" for f in rep["diff_vs_previous"]]
+    if rep["errors"]:
+        lines += ["", "## Errors", ""] + [f"- {k}: {v}" for k, v in rep["errors"].items()]
+    return "\n".join(lines) + "\n"
+
+
+def write_report(out_dir, rep: dict) -> None:
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "report.json").write_text(json.dumps(rep, indent=2, sort_keys=True), encoding="utf-8")
+    (out_dir / "report.md").write_text(render_markdown(rep), encoding="utf-8")
