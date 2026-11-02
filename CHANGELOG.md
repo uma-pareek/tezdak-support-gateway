@@ -2,6 +2,11 @@
 
 Release notes for the support assistant. Entries match the module changelogs inside the code.
 
+## 0.9 (2026-11-02)
+- Ops tooling: admin CLI, sampling, alerts, retention, shadow evaluation (`tezdak/ops/` v3).
+- Dashboard gets token spend and a bridge from the base `Metrics` object.
+- Eval harness: JSONL traces, `report.md` with a row per chat.
+
 ## 0.8 (2026-10-26)
 - Policy generations v1, v2, v3 in `tezdak/policy/`, loaded with `TEZDAK_POLICY_GEN` (not wired into the agent yet).
 - Tool layer v2 in `tezdak/tools_ext/`: per-tool config, TTL cache for reads, argument validation (not wired yet).
