@@ -1,6 +1,6 @@
 # Architecture
 
-Last touched: 2026-10-26 (Meera). This is a map of the repo as it stands, not a design wish list.
+Last touched: 2026-11-04 (Meera). This is a map of the repo as it stands, not a design wish list.
 
 ## One-paragraph version
 
@@ -25,6 +25,7 @@ Everything the agent does is recorded as events, and the eval harness turns thos
 | `tezdak/features/` | Optional skills (address update, cancel, COD refund, rider feedback, hand-off summary, and more). | Planner is built when a backend is passed. Three skills are switched off by default (`FEATURES_OFF_BY_DEFAULT` in `agent.py`). Some skills only appear when the newer NLU emits their intent. |
 | `tezdak/prompts/` | Prompt versions v1 to v6, hint files, Hinglish style files. | Behind `TEZDAK_PROMPT_VERSION` (unset by default, so the prompt in `agent.py` is used). |
 | `tezdak/backend/` | SQLite-backed stores for orders, tickets, customers, settings, events, plus a seed and a facade. | In use through `Backend`. |
+| `tezdak/ops/` | Offline tooling over saved conversation records: dashboard, cohorts, costs, alerts, admin CLI. | Used by hand, not by the running agent. |
 | `eval/` | Scenario runner, scripted customers, traces, a report of what each chat did. | See [eval-howto](docs/eval-howto.md). |
 
 ## Request flow
