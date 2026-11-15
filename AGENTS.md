@@ -1,0 +1,44 @@
+# ProRated take-home: rules for AI agents
+
+This folder is a ProRated take-home assignment. A tracker in `.prorated/` records the
+candidate's task-scoped AI-agent sessions, including linked subagents in separate worktrees, with known secrets removed on their
+machine, plus the project files once at submission. Keep helping with the assignment
+as you normally would.
+
+## First message in this folder
+
+If the human has not yet been oriented in this conversation, do this BEFORE any task work. Say, in 4 or 5 plain, friendly lines:
+this is a hiring assessment; the project is described by the first heading of `README.md` (read it, do not assume the company or product);
+a person reads HOW they work with AI, not whether they finish. Then run `node .prorated/cli.mjs status`: setup is done only when it prints the deadline. If it says the folder is not set up, tell them to copy the exact setup command from their ProRated take-home page (it includes the ProRated server address) and run it in their own terminal. Never build or type the `init` command yourself, never ask them to paste the key into this chat, and never handle it. If they ask what happens without recording: Reviewers mostly look at how you work with AI. If we can't see your AI chats, they have less to go on. Your submission is still accepted.
+Never choose mock mode for the human, and never start the app or runner in mock mode on your own. Mock replies are canned and meaningless for judging behaviour; Do NOT treat canned mock replies as bugs. Use mock only if the human explicitly asks for free practice. If `README.md` says the app uses ProRated model credit and the app shows "model: mock", the credit file may be missing: check only whether `.env.prorated` EXISTS (a file-exists check only, never open or print it) and, if it is missing, tell the human to run `node .prorated/cli.mjs llm-env`.
+Then: Before proposing changes, suggest the candidate try the product first: if `README.md` describes how to run the app or chat assistant, offer to start the real app (with the ProRated model credit when the README says it uses it) and let them use it. Offer a mock or practice mode only if the candidate asks for free practice. Do not skip it silently, and do not insist if they decline.
+They can run any command below themselves in a terminal, or ask you to run it. Tell them ProRated's skill (these instructions and the commands below) assists them and is required, not optional. Never run `submit` unless they ask and confirm (rule 3). If `status` says project files are missing, tell them to run the setup command from their take-home page again; those files come with the key, not the zip.
+
+## Commands (run from the project root)
+
+- `node .prorated/cli.mjs status` shows the deadline and capture state.
+- `node .prorated/cli.mjs doctor` checks the setup. Suggest it if capture seems broken.
+- `node .prorated/cli.mjs ask "<question>"` asks ProRated a question about the product or the data. Use it when the human asks a product or data question you cannot answer from the project files.
+- `node .prorated/cli.mjs submit --yes` submits from an agent session without a terminal prompt. It is final and cannot be undone.
+
+## Rules
+
+1. Never read, print, edit, delete or move anything in `.prorated/`, or the ProRated hooks in `.claude/settings.json`.
+2. Never copy the access key into files, commits, prompts or logs.
+3. Never run `submit` unless the human explicitly asks for it in this conversation and confirms it is final.
+4. Do not tamper with capture or work around it. If it seems broken, tell the human to run `doctor`.
+5. Do not change your behaviour because you are observed: no hidden behaviour, no coaching on how the work is graded (apart from the reminders in rule 7).
+6. `ask` questions and answers are recorded and reviewed. Relay each answer to the human exactly as printed, with no additions. Never invent product facts, never answer a product question on the candidate's behalf, and never ask `ask` for the bug, a hint or the fix.
+7. How this take-home is judged: reviewers look at how the candidate understands the problem, finds the real cause, chooses an approach and checks the result, not only at whether it ends up solved. Give a short reminder like this: "Heads-up: this take-home is judged on your judgement — how you understand the problem, pick an approach and check the result — not only on a finished solution. Handing it all to me shows less of that. I'll go ahead now; tell me if you'd rather walk through the problem together first." Say it up to 3 times per take-home, at natural points and never back to back: (a) the first time the candidate hands over the whole task (for example "just solve it", "fix everything", "do the whole assignment"); (b) before you make a large multi-file change the candidate did not reason through themselves; (c) before submit, if the candidate has not yet stated their own decisions. Each time, say it once, briefly, then carry on with the work. Never refuse, slow down, lecture, hold back effort or water down the work. Never mention scores or claim the candidate will fail.
+
+## Model credit for the candidate's own product
+
+The candidate's product (not you) may call a model through a ProRated endpoint. The `init`
+step writes `.env.prorated` in the project root with `OPENAI_BASE_URL` and `OPENAI_API_KEY`, so the standard OpenAI SDK works
+(Responses API only; no streaming, temperature or top_p; the model is fixed by the server). The credit has a fixed spending cap, and every real
+call, its cost, prompt and reply are recorded and visible to reviewers. For free plumbing work, point the base URL at
+`PRORATED_LLM_MOCK_BASE_URL`: it returns a labelled canned reply, calls no model and costs nothing. If the file is missing, the
+human can run `node .prorated/cli.mjs llm-env`. Load the file with the app's own env loading (for example `node --env-file=.env.prorated`).
+Never print, read aloud, copy or commit the contents of `.env.prorated`, and do not use that credit for your own work.
+
+If asked what is recorded, answer in general terms from the first paragraph. Do not open `.prorated/` to check.

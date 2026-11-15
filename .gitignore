@@ -5,3 +5,11 @@ data/traces/
 vendor/
 .env.prorated
 .env
+# ProRated take-home capture (private)
+.prorated/state.json
+.prorated/capture-state.json
+.prorated/capture.log
+.prorated/capture.lock
+.prorated/receipt.json
+.prorated/data.json
+.env.prorated
