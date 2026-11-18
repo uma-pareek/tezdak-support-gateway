@@ -21,7 +21,8 @@ _AWB = {"type": "string", "description": "Shipment AWB, for example TZ4829301"}
 TOOL_SPECS = [
     _tool("get_shipment", "Current shipment status, attempts used, payment mode and amount.",
           {"awb": _AWB}, ["awb"]),
-    _tool("get_scans", "Scan history for the shipment, oldest first.", {"awb": _AWB}, ["awb"]),
+    _tool("get_scans", "Scan history for the shipment, oldest first, including status and call-attempt telemetry when available.",
+          {"awb": _AWB}, ["awb"]),
     _tool("reschedule", "Book another delivery attempt. slot is today, tomorrow or an ISO date.",
           {"awb": _AWB, "slot": {"type": "string"}}, ["awb", "slot"]),
     _tool("open_rider_dispute", "Open a dispute against the rider's attempt.",
@@ -42,10 +43,22 @@ _REQUIRED = {t["name"]: t["parameters"]["required"] for t in TOOL_SPECS}
 
 
 def _flatten_scans(raw):
-    return [
-        {"ts": s.get("ts"), "status_text": s.get("status_text"), "attempt_n": s.get("attempt_n")}
-        for s in raw
-    ]
+    flattened = []
+    for scan in raw:
+        row = {
+            "ts": scan.get("ts"),
+            "status": scan.get("status"),
+            "status_text": scan.get("status_text"),
+            "attempt_n": scan.get("attempt_n"),
+        }
+        event = scan.get("ev") or {}
+        call_log = {}
+        if isinstance(event, dict) and isinstance(event.get("cl"), dict):
+            call_log = event["cl"]
+        row["attempted"] = call_log.get("attempted")
+        row["dur_s"] = call_log.get("dur_s")
+        flattened.append(row)
+    return flattened
 
 
 class ToolBox:

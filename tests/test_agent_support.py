@@ -85,8 +85,12 @@ class ToolTests(unittest.TestCase):
     def test_get_scans_output_shape(self):
         out = ToolBox(FakeCarrier()).call("get_scans", {"awb": "TZ4829301"})
         self.assertEqual(len(out), 2)
-        for row in out:
-            self.assertEqual(set(row), {"ts", "status_text", "attempt_n"})
+        self.assertEqual(set(out[0]), {"ts", "status", "status_text", "attempt_n", "attempted", "dur_s"})
+        self.assertEqual(out[0]["attempted"], None)
+        self.assertEqual(out[0]["dur_s"], None)
+        self.assertEqual(out[1]["status"], "NDR")
+        self.assertIs(out[1]["attempted"], False)
+        self.assertEqual(out[1]["dur_s"], 0)
 
     def test_read_succeeds_after_timeouts(self):
         carrier = FakeCarrier(timeouts_on_reads=2)
@@ -161,6 +165,47 @@ class AgentTests(unittest.TestCase):
         for name in ("reschedule", "open_rider_dispute", "create_refund"):
             self.assertNotIn(name, carrier.names())
         self.assertEqual(turn.commitments, [])
+
+    def test_fake_ndr_tool_sequence_can_complete_without_escalation(self):
+        class ScriptedLLM:
+            def __init__(self):
+                self.calls = [
+                    ("get_shipment", {"awb": "TZ4829301"}),
+                    ("get_scans", {"awb": "TZ4829301"}),
+                    ("open_rider_dispute", {"awb": "TZ4829301", "reason": "NDR scan has no attempted call; duration 0s."}),
+                    ("reschedule", {"awb": "TZ4829301", "slot": "tomorrow"}),
+                    ("create_refund", {"awb": "TZ4829301", "amount_inr": 50, "kind": "goodwill"}),
+                ]
+                self.system = ""
+
+            def respond(self, messages, tools=None):
+                if not self.system:
+                    self.system = messages[0]["content"]
+                if self.calls:
+                    name, args = self.calls.pop(0)
+                    return {"output": [{"type": "function_call", "call_id": "test-call-%d" % len(self.calls),
+                                        "name": name, "arguments": json.dumps(args)}]}
+                return {"output": [{"type": "message", "content": "Dispute opened, goodwill granted, and delivery rescheduled.\nETA: tomorrow"}]}
+
+        carrier = FakeCarrier("NDR")
+        llm = ScriptedLLM()
+        agent = SupportAgent(llm, carrier, Policies())
+        turn = agent.handle({"awb": "TZ4829301", "messages": [{"role": "user", "content": "Rider aaya hi nahi"}]})
+
+        self.assertIn("open a rider dispute", llm.system)
+        self.assertIn("Rs 50 goodwill", llm.system)
+        self.assertIn("Do not escalate ordinary fake attempt cases", llm.system)
+        self.assertEqual(turn.intent, "ndr_complaint")
+        self.assertFalse(turn.escalated)
+        self.assertEqual(carrier.names(), ["get_shipment", "get_scans", "open_rider_dispute", "reschedule", "create_refund"])
+        goodwill_call = next(call for call in turn.tool_calls if call["name"] == "create_refund")
+        self.assertEqual(goodwill_call["args"], {"awb": "TZ4829301", "amount_inr": 50, "kind": "goodwill"})
+        self.assertEqual(goodwill_call["result"]["mode"], "wallet")
+        self.assertEqual(next(call["result"]["ticket_id"] for call in turn.tool_calls
+                              if call["name"] == "open_rider_dispute"), "D-1")
+        self.assertEqual(next(call["result"]["status"] for call in turn.tool_calls
+                              if call["name"] == "reschedule"), "RESCHEDULED")
+        self.assertEqual(turn.commitments, [{"type": "eta", "value": "tomorrow"}])
 
     def test_second_complaint_does_not_escalate_again(self):
         carrier = FakeCarrier("NDR")

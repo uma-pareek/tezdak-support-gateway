@@ -49,7 +49,16 @@ End every reply with one line `ETA: <today|tomorrow|YYYY-MM-DD|none>` stating th
 INTENT_HINTS = {
     "wismo": "Check the shipment (and scans if needed) and tell the customer where the parcel is.",
     "reschedule_request": "Book another attempt for the slot the customer asked for, unless the parcel is out of attempts.",
-    "ndr_complaint": "Complaints about a missed or failed attempt go to a human: check the shipment, then escalate.",
+    "ndr_complaint": (
+        "Check the shipment and scans. If the last scan is NDR (customer unavailable/unreachable, door locked, or "
+        "address not found), treat it as a fake attempt per operations: open a rider dispute and grant Rs 50 goodwill "
+        "with create_refund kind=goodwill. Use attempted and dur_s accurately in the dispute note; missing telemetry "
+        "is unknown and must not be described as proof. If attempts remain, reschedule for the earliest available slot "
+        "(today when available; otherwise the earliest later slot the carrier accepts). Do not escalate ordinary fake "
+        "attempt cases. Never exceed the three-attempt limit; if no attempts remain, skip rescheduling and explain "
+        "that no automatic attempt remains, without escalating. "
+        "If the last scan is not NDR, follow the normal human handoff path."
+    ),
     "not_received_after_delivered": "Delivered-but-not-received cases go to a human: check the shipment, then escalate.",
     "other": "Answer briefly and ask for the tracking number if you need it.",
 }
